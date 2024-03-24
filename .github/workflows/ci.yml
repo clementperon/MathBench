@@ -3,7 +3,7 @@ name: C++ CI
 on: [push, pull_request]
 
 jobs:
-  build:
+  linux:
     strategy:
       matrix:
         include:
@@ -33,4 +33,24 @@ jobs:
       run: cmake --build build -j 4
 
     - name: Run benchmarks
-      run: ./build/BenchMath
+      run: ./build/bin/BenchMath
+
+  macos:
+    strategy:
+      matrix:
+        include:
+          - os: macos-14
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure CMake
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      run: cmake --build build -j 4
+
+    - name: Run benchmarks
+      run: ./build/bin/BenchMath
